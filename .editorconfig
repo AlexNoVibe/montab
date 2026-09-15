@@ -1,0 +1,9 @@
+# Переносы строк — одинаково во всех редакторах (в паре с .gitattributes).
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[*.{cmd,bat,ps1,psm1}]
+end_of_line = crlf
