@@ -4,25 +4,27 @@ on:
   push:
     branches: [release]
 
+# По умолчанию только чтение; запись в релизы — лишь у job'а release
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   release:
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
         with:
-          dotnet-version: 11.0.x
-          dotnet-quality: preview
+          global-json-file: global.json
 
       - name: Publish (NativeAOT)
         shell: pwsh
         run: |
           $env:PATH += ';C:\Program Files (x86)\Microsoft Visual Studio\Installer'
-          dotnet publish montab.csproj -c Release -r win-x64
+          dotnet publish montab.csproj -c Release -r win-x64 -p:RestoreLockedMode=true
           Get-Item bin\Release\net11.0-windows\win-x64\publish\montab.exe
 
       # Тег/релиз v<Version из csproj>. Существующий релиз не пересоздаётся —
